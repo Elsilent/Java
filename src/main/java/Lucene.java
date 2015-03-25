@@ -1,8 +1,10 @@
 import com.google.gson.*;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -15,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,7 +77,7 @@ public class Lucene {
         for (JsonElement rep : theatre.getAsJsonArray("rep")) {
             doc.add(new StringField("rep", rep.toString(), Field.Store.YES));
         }
-        System.out.println("test");
+        doc.add(new TextField("content", name + " " + address, Field.Store.NO));
         writer.addDocument(doc);
     }
 
@@ -94,12 +97,19 @@ public class Lucene {
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 // Do something with child
-                Object obj = parser.parse(new FileReader(child));
-                try {
-                    JsonObject current = (JsonObject) obj;
-                    indexTheatre(current);
-                } catch (ClassCastException e){
-                    System.out.println("indexes");
+                String extension = FilenameUtils.getExtension(child.getAbsolutePath());
+                System.out.println(extension);
+                if (extension.equals("json")) {
+                    System.out.println("test");
+                    Object obj = parser.parse(new FileReader(child));
+                    try {
+                        JsonObject current = (JsonObject) obj;
+                        indexTheatre(current);
+                    } catch (ClassCastException e) {
+                        System.out.println("indexes");
+                    }
+                } else {
+                    System.out.println("fail");
                 }
             }
         } else {

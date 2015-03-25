@@ -14,14 +14,14 @@ public class Main {
         // instantiate the search engine
         Search se = new Search();
         // retrieve top 100 matching document list for the query "theatreName"
-        TopDocs topDocs = se.performSearch("Большой театр", 100);
+        TopDocs topDocs = se.performSearch("Бо"+"*", 100);
         // obtain the ScoreDoc (= documentID, relevanceScore) array from topDocs
         ScoreDoc[] hits = topDocs.scoreDocs;
         // retrieve each matching document from the ScoreDoc array
         for (int i = 0; i < hits.length; i++) {
             Document doc = Search.getDocument(hits[i].doc);
-            String theatreName = doc.get("metro");
-            System.out.println(doc);
+            String theatreName = doc.get("name");
+            System.out.println(theatreName);
         }
     }
 }

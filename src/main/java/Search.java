@@ -18,7 +18,7 @@ public class Search {
     public Search() throws IOException {
         searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File(System.getProperty("user.dir")+"//json//"))));
         // поиск по имени
-        parser = new QueryParser("name", new StandardAnalyzer());
+        parser = new QueryParser("content", new StandardAnalyzer());
     }
 
     public TopDocs performSearch(String queryString, int n)
