@@ -29,7 +29,7 @@ public class Lucene {
 
     public static IndexWriter getIndexWriter(boolean create) throws IOException {
         if (indexWriter == null) {
-            Directory indexDir = FSDirectory.open(new File(System.getProperty("user.dir")+"\\indexes\\"));
+            Directory indexDir = FSDirectory.open(new File(System.getProperty("user.dir")+"//json//"));
             IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_10_2, new StandardAnalyzer());
             indexWriter = new IndexWriter(indexDir, config);
         }
@@ -68,7 +68,7 @@ public class Lucene {
         doc.add(new StringField("name", name, Field.Store.YES));
         // data
         for (JsonElement data : theatre.getAsJsonArray("data")) {
-
+            doc.add(new StringField("data", data.toString(), Field.Store.YES));
         }
         // rep
         for (JsonElement rep : theatre.getAsJsonArray("rep")) {
@@ -78,7 +78,7 @@ public class Lucene {
         writer.addDocument(doc);
     }
 
-    public static void rebuildIndexes() throws IOException {
+    public static void rebuildIndexes() throws IOException  {
         //
         // Erase existing index
         //
@@ -89,14 +89,18 @@ public class Lucene {
         JsonParser parser = new JsonParser();
         String workingDir = System.getProperty("user.dir");
 
-        File dir = new File(workingDir+"\\json\\");
+        File dir = new File(workingDir+"//json//");
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 // Do something with child
                 Object obj = parser.parse(new FileReader(child));
-                JsonObject current = (JsonObject) obj;
-                indexTheatre(current);
+                try {
+                    JsonObject current = (JsonObject) obj;
+                    indexTheatre(current);
+                } catch (ClassCastException e){
+                    System.out.println("indexes");
+                }
             }
         } else {
             System.out.println("Directory is empty");

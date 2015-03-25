@@ -16,7 +16,7 @@ public class Search {
     private QueryParser parser = null;
 
     public Search() throws IOException {
-        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File(System.getProperty("user.dir")+"\\indexes\\"))));
+        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File(System.getProperty("user.dir")+"//json//"))));
         // поиск по имени
         parser = new QueryParser("name", new StandardAnalyzer());
     }
